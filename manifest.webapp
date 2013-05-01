@@ -1,0 +1,39 @@
+{
+    "name": "musicTube player",
+    "description": "add music from youtube. Play, listen and enjoy",
+    "launch_path": "/index.html",
+    "type" : "privileged",
+    "icons": {
+        "60": "/img/art60.png",
+        "128": "/img/art128.png"
+    },
+    "developer": {
+        "name": "Sajirdalas"
+    },
+    "default_locale": "en",
+    "installs_allowed_from": [
+        "*"
+    ],
+    "activities": {
+        "view": {
+            "filters": {
+                "type": [
+                    "video/youtube"
+                ]
+            },
+            "href": "index.html"
+        },
+        "open": {
+            "filters": {
+                "type": [
+                    "video/youtube"
+                ]
+            },
+            "href": "index.html"
+        }
+    },
+    "permissions": {
+    "systemXHR": { "description": "Required for youtube.js, the same javascript library used by the gaia video app to fetch youtube videos. See bugzilla bug 865091" },
+    "desktop-notification":{ "description": "for displaying error messages"}
+     }   
+}

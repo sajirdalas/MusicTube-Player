@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>TEST</title>
+		<link rel="stylesheet" href="css/main.css">
+		<link rel="stylesheet" href="css/action_menu.css">
+		<script type='text/javascript' src="js/jquery.js"></script>
+		<script type='text/javascript' src="js/modernizr.custom.js"></script>
+		<script type='text/javascript' src="js/async_storage.js"></script>
+		<script type='text/javascript' src="js/youtube.js"></script>
+		<script type='text/javascript' src="js/main.js"></script>
+	</head>
+	<body id="body" class="center">
+
+		<div id="wrapper">
+
+			<div id="scrollbar">
+				<!-- <img src="img/art.png" class="AlbumArt"></img> -->
+
+
+			</div> 
+			<div id="display">
+				
+				<div id="section1">
+					<img src="img/test.jpg" id="CurrentlyPlaying"></img>
+					<p id="SongName"> Empty playlist. Search for youtube videos and add! </p>
+					<div id="SeekBar"><div id="ProgressBar"></div> </div>
+				</div>
+				<div id="section2">
+					<div id="Button_container">
+					<div id="back" class="button">
+						<img src="img/back.png" class="bImg"></img>
+					</div>
+					<div id="play" class="button">
+						<img id ="playImg" src="img/play.png" class="bImg"></img>
+					</div>
+					<div id="foward" class="button">
+						<img src="img/forward.png" class="bImg"></img>
+					</div>
+					<div id="randomB" class="button">
+						<img id="shuffleImg" src="img/shuffle.png" class="bImg"></img>
+					</div>
+					<div id="save" class="button">
+						<img id="saveImg" src="img/save.png" class="bImg"></img>
+					</div>
+					 </div>
+				</div>
+			</div>
+		</div>
+		<div id="LoadingDialog" class="Active_Loading">
+			<div id="Int_Load_Box">
+				Do you want to add a new playlist?
+				<form name="TheForm">
+					Playlist url or id: <input id ="TextInput" type="text" name="PlayListUrl" />
+					<input type="button" name="TheButton" value="Add!"/>
+				</form>
+				Or browse saved ones?
+				<button id="BrowsePlaylists">Browse!</button><br>
+				Or close this popup?
+				<button id="CloseUp">Close!</button>
+			</div>
+		</div>
+
+		<div id="blocker" class="inactive">
+<!-- 			<form role="dialog" data-type="action" onsubmit="return false;"> -->
+			    <form id="secondForm" role="dialog" data-type="action">
+    			<menu>
+      			<button id="Cancel"> Cancel </button>
+    			</menu>
+  			</form>
+  		</div>
+		<!-- <video controls='controls' id="player"/> -->
+		<audio id="player"/>
+	</body>
+</html>

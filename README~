@@ -1,0 +1,8 @@
+This is WebApp designed for Firefox OS.
+
+MusicTube Player is a music player which streams audio from youtube. Features
+
+-Type a link to playlist video, playlist page, or playlist id to import the entire playlist.
+-Look for youtube videos on the browser or youtube app and import the audio to the player using web activites.
+
+
