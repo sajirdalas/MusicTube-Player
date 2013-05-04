@@ -7,5 +7,9 @@ MusicTube Player is a music player which streams audio from youtube. Features
 -AlbumArt based on the youtube preview image
 -Store and load your custom playlists.
 
-The interface is responsive
+Stuff for developers:
+
+-playlist URLs are processed using YQL to return an array of each "songs" URL
+-Every individual URL is processed into an HTML5 audio tag using the youtube.js library extracted from Gaia's native video player
+-The Array with the links and the name of the playlists are saved using async storage
 
