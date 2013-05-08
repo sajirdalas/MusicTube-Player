@@ -53,19 +53,21 @@
 				</div>
 			</div>
 		</div>
-		<div id="LoadingDialog" class="Active_Loading">
-			<div id="Int_Load_Box">
-				Do you want to add a new playlist?
-				<form name="TheForm">
-					Playlist url or id: <input id ="TextInput" type="text" name="PlayListUrl" value="https://www.youtube.com/watch?v=9bZkp7q19f0&list=PL75798E85F0D3C98B"/>
-					<input type="button" name="TheButton" value="Add!"/>
-				</form>
-				Or browse saved ones?
-				<button id="BrowsePlaylists">Browse!</button><br>
-				Or close this popup?
-				<button id="CloseUp">Close!</button>
-			</div>
-		</div>
+
+
+        <div id="blocker2">
+			<form role="dialog" data-type="action" onsubmit="return false;">
+			    <form id="secondForm" role="dialog" data-type="action">
+    			<menu>
+    			<button id="AddYTP"> Add whole YT playlist </button>
+<!--     			<div id="URLinput">
+  	            	<input type="text"/><button type="button" >OK</button>
+  				</div> -->
+    			<button id="BrowsePlaylists"> Load saved playlist </button>
+      			<button id="CloseUp"> Cancel </button>
+    			</menu>
+  			</form>
+  		</div> 
 
 		<div id="blocker" class="inactive">
 <!-- 			<form role="dialog" data-type="action" onsubmit="return false;"> -->

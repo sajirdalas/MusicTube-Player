@@ -424,18 +424,16 @@ $("#foward").click(function(){
 
   //Here goes form management for the forms
 
-  var x = document.TheForm.TheButton;
-  x.addEventListener("click",function(){
-    var y = document.TheForm.PlayListUrl;
-    var StartingUrl = y.value;
-    PlaylistUrl = StartingUrl;
-    var INST = UrltoYQL(StartingUrl);
-    GetList(INST);
-    //loadFirstTrack();
-    $("#Int_Load_Box").fadeOut();
-    $("#LoadingDialog").attr("class", "Done_Loading");
+  $("#AddYTP").click(function(){
+    $("#AddYTP").after('<div id="URLinput"><input type="text"/><button type="button" >OK</button></div>');
+    $("#AddYTP").remove();
+    $("#URLinput > button").click(function(){
+      PlaylistUrl = $("#URLinput > input").get(0).value;
+      var INST = UrltoYQL(PlaylistUrl);
+      GetList(INST);
+      $("#blocker2").fadeOut();
+    });
   });
-
 
   $("#BrowsePlaylists").click(function(){
 
@@ -456,7 +454,7 @@ $("#foward").click(function(){
                   }
       });
       }
-      $("#LoadingDialog").attr("class", "Done_Loading");
+      $("#blocker2").fadeOut();
       $("#blocker").toggleClass("inactive"); 
     }
   });
@@ -466,11 +464,11 @@ $("#foward").click(function(){
 
   $("#Cancel").click(function(){
   $("#blocker").toggleClass("inactive");
-        $("#LoadingDialog").attr("class", "Active_Loading");
+  $("#blocker2").fadeIn();
   });
 
   $("#CloseUp").click(function(){
-        $("#LoadingDialog").attr("class", "Done_Loading");
+        $("#blocker2").fadeOut();
   });
 
   // And here goes the listeners to make the loading pop up work
