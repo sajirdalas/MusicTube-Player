@@ -88,7 +88,7 @@ $.getScript(YQLInst,
 function UrltoYQL(youtubeURL){
 
   if(youtubeURL.indexOf("playlist?list=")==-1 && youtubeURL.indexOf("&list=")==-1){
-    youtubeURL="playlist?list="+youtubeURL.toUpperCase();
+    youtubeURL="playlist?list="+youtubeURL;
     console.log(youtubeURL);
   }
 
@@ -472,5 +472,19 @@ $("#foward").click(function(){
   $("#CloseUp").click(function(){
         $("#LoadingDialog").attr("class", "Done_Loading");
   });
+
+  // And here goes the listeners to make the loading pop up work
+
+    $("audio").on("waiting",function(){
+    // $("#toast").removeClass("hidden");
+    $("#toast").contents()[2].nodeValue = "Buffering. Please Wait";
+    $("#toast").fadeIn();
+  });
+
+  $("audio").on("playing",function(){
+    // $("#toast").addClass("hidden");
+    $("#toast").fadeOut();
+  });
+
 }
 }
