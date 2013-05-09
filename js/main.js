@@ -134,21 +134,19 @@ function GetImgList(Links){
 
 function GetList(YQLInst){
   // console.log("GetList executed");
-$.getScript(YQLInst, 
-  function() {
+$.getJSON(YQLInst, 
+  function(data) {
     console.log("got list");
+    process_list(data);
   });
 }
 
 function UrltoYQL(youtubeURL){
 
   if(youtubeURL.indexOf("playlist?list=")==-1 && youtubeURL.indexOf("&list=")==-1){
-    youtubeURL="playlist?list="+youtubeURL;
-    console.log(youtubeURL);
-  }
+    result = youtubeURL;
 
-  // console.log("UrltoYQL executed");
-  if(youtubeURL.indexOf("playlist?list=")==-1){
+  }else if(youtubeURL.indexOf("playlist?list=")==-1){
     var ini = youtubeURL.indexOf("&list=");
     if(youtubeURL.indexOf("&index=")!=-1){
       var result = youtubeURL.substring(ini+"&list=".length,youtubeURL.indexOf("&index="));}
@@ -160,10 +158,10 @@ function UrltoYQL(youtubeURL){
        var result = youtubeURL.substring(ini+"playlist?list=".length);}
   
 
-  console.log("result of link: "+result);
+  // console.log("result of link: "+result);
   result = result.replace(/&/g,"%26").replace(/=/g,"%3D").replace(/\//g,"%2F").replace(/:/g,"%3A");
   result = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22http%3A%2F%2Fwww.youtube.com%2Fplaylist%3Flist%3D" +
-            result + "%22%20and%20xpath%3D'%2F%2Fa%5Bcontains(%40class%2C%22yt-uix-tile-link%22)%5D'&format=json&diagnostics=true&callback=process_list";
+            result + "%22%20and%20xpath%3D'%2F%2Fa%5Bcontains(%40class%2C%22yt-uix-tile-link%22)%5D'&format=json&diagnostics=true";
   
   // if(result=="http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DzHMJ03IhroE%26feature%3Dshare%26list%3DPLLA7WhEJhN5wnO0P6vChk-5YCM067bWnV%22%20and%20xpath%3D'%2F%2Fli%5Bcontains(%40class%2C%22video-list-item%20yt-uix-scroller-scroll-unit%22)%5D'&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=process_list"){
   // console.log("yes");}else{
@@ -350,7 +348,10 @@ document.ready = function(){
   Timer = null;
   CurrentlyPressed = null;
 
-  $("#secondForm").get(0).onsubmit = function(){return false;}
+   $("#secondForm").get(0).onsubmit = function(){return false;}
+
+  // $("#InitialMenu").get(0).onsubmit = "return false;"
+  // $("#LoadMenu").get(0).onsubmit = "return false;"
 
   playing=false;
   ThePlayer = document.getElementById("player");
@@ -363,6 +364,9 @@ document.ready = function(){
   });
 
   Shuffle = false;
+
+ //Time for the button listeners
+
   $("#randomB").click(function(){
     if(!Shuffle){
       Shuffle=true;
@@ -374,6 +378,7 @@ document.ready = function(){
   });
 
   $("#back").click(function(){
+    $("#toast").fadeIn();
     if(CurrentIndex!=0){
       if(Shuffle){
         CurrentIndex=Math.floor(Math.random()*CurrentPlaylist.ImgList.length);
@@ -396,6 +401,7 @@ document.ready = function(){
 
 
 $("#foward").click(function(){
+    $("#toast").fadeIn();
     if(CurrentIndex!=CurrentPlaylist.ImgList.length){
       if(Shuffle){
         CurrentIndex=Math.floor(Math.random()*CurrentPlaylist.ImgList.length);
@@ -415,6 +421,11 @@ $("#foward").click(function(){
 
     }
   });
+
+$("#menu").click(function(){
+  $("#save").removeClass("inactive");
+  $("#blocker2").fadeIn();
+});
 
   $("#CurrentlyPlaying").click(function(){
     $("#CurrentlyPlaying").css("animation","rotate 3s");
@@ -480,6 +491,7 @@ $("#foward").click(function(){
   //Here goes form management of the initial gialog
 
   $("#AddYTP").click(function(){
+    // $("#AddYTP").after('<div id="URLinput"><input type="text" value="http://www.youtube.com/watch?v=TZGzyftKW2E&list=PL10872F8B9F1071FA"/><button type="button" >OK</button></div>');
     $("#AddYTP").after('<div id="URLinput"><input type="text"/><button type="button" >OK</button></div>');
     $("#AddYTP").remove();
     $("#URLinput > button").click(function(){
@@ -502,9 +514,15 @@ $("#foward").click(function(){
         asyncStorage.getItem("playlist"+i.toString()+"Obj",function(value){
                   if(value!=null){
                   if (Modernizr.touch){
-                  $("#blocker > form > menu").prepend('<button ontouchstart="PressDown(this)" ontouchend="ReleaseUp(this)" id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
+                  // $("#blocker > form > menu").prepend('<button ontouchstart="PressDown(this)" ontouchend="ReleaseUp(this)" id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
+                  $("#blocker > form > menu").prepend('<button id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
+                  $("#playlist"+value.number.toString()).on("touchstart",function(){PressDown(this);});
+                  $("#playlist"+value.number.toString()).on("touchend",function(){ReleaseUp(this);});
                   }else{
-                  $("#blocker > form > menu").prepend('<button onmousedown="PressDown(this)" onmouseup="ReleaseUp(this)"   id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
+                  // $("#blocker > form > menu").prepend('<button onmousedown="PressDown(this)" onmouseup="ReleaseUp(this)"   id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
+                  $("#blocker > form > menu").prepend('<button id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
+                  $("#playlist"+value.number.toString()).on("mousedown",function(){PressDown(this);});
+                  $("#playlist"+value.number.toString()).on("mouseup",function(){ReleaseUp(this);});
                   }
                   }
       });
