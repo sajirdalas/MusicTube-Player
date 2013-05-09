@@ -42,25 +42,80 @@ function PopulateScrollBar(ArtList){
   $("#scrollbar").html("");
   for (var i = 0; i < ArtList.length; i++) {
     $("#scrollbar").append('<img src="'+ArtList[i]+'" class="AlbumArt"'+"id=img"+i+'></img>');
-      $("#img"+i).click(function(){
-        var index = this.id.substr(3);
-        // Set album image
-        CurrentIndex = parseInt(index);
-        $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[index]);
 
-        // Set PLayer Source and name
+      //Add the click or touch listeners for every song
 
-        //SetPlayer(index);
+      if (Modernizr.touch){
+        $("#img"+i).on("touchstart",function(){
+          PressTime=false;
+          CurrentlyPressed=this;
+          Timer=setTimeout(function(){
+          PressTime=true;
+          alert("long click");
+          if(window.confirm("Are you sure you want to remove this song?")){
+          var index = CurrentlyPressed.id.substr(3);
+          CurrentPlaylist.ImgList.splice(index,1);
+          CurrentPlaylist.LinkList.splice(index,1);
+          $(CurrentlyPressed).remove();
+          }
+          },1000);
+        });
+
+        $("#img"+i).on("touchend",function(){
+          if(!PressTime){
+          clearTimeout(Timer);
+          // alert("short click");
+          var index = this.id.substr(3);
+          // Set album image
+          CurrentIndex = parseInt(index);
+         $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[index]);
+          //Pause anything if playing
+          if(playing){
+          PauseMusic();
+          SetPlayerandPlay(CurrentIndex);
+          }else{
+            SetPlayer(CurrentIndex);
+               }
+                     }
+        });
+      }else{
+          $("#img"+i).on("mousedown",function(){
+          PressTime=false;
+          CurrentlyPressed=this;
+          Timer=setTimeout(function(){
+          PressTime=true;
+          // alert("long click");
+
+          if(window.confirm("Are you sure you want to remove this song?")){
+          var index = CurrentlyPressed.id.substr(3);
+          CurrentPlaylist.ImgList.splice(index,1);
+          CurrentPlaylist.LinkList.splice(index,1);
+          $(CurrentlyPressed).remove();
+          }
+          },1000);
+        });
+
+        $("#img"+i).on("mouseup",function(){
+          if(!PressTime){
+          clearTimeout(Timer);
+          // alert("short click");
+          var index = this.id.substr(3);
+          // Set album image
+          CurrentIndex = parseInt(index);
+         $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[index]);
+          //Pause anything if playing
+          if(playing){
+          PauseMusic();
+          SetPlayerandPlay(CurrentIndex);
+          }else{
+            SetPlayer(CurrentIndex);
+               }
+                     }
+        });
+      }
 
 
-        //Pause anything if playing
-        if(playing){
-        PauseMusic();
-        SetPlayerandPlay(CurrentIndex);
-        }else{
-          SetPlayer(CurrentIndex);
-        }
-    });
+
   };
   loadFirstTrack();
 }
@@ -422,7 +477,7 @@ $("#foward").click(function(){
     }
   });
 
-  //Here goes form management for the forms
+  //Here goes form management of the initial gialog
 
   $("#AddYTP").click(function(){
     $("#AddYTP").after('<div id="URLinput"><input type="text"/><button type="button" >OK</button></div>');
