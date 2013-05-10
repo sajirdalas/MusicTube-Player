@@ -262,16 +262,13 @@ function ResetProgressBar(){
 }
 
 function selectListElement(e){
-
   var id = e.id;
   console.log(id+"Obj");
   asyncStorage.getItem(id+"Obj",function(value){
     CurrentPlaylist = value;
     PopulateScrollBar(CurrentPlaylist.ImgList);
-    $("#Int_Load_Box").fadeOut();
-    $("#LoadingDialog").attr("class", "Done_Loading");
-    $("#blocker").toggleClass("inactive");
-
+    $("#blocker").fadeOut();
+    $("#loadMenu").html('<button id="Cancel"> Cancel </button>');
   });
 
 }
@@ -424,7 +421,9 @@ $("#foward").click(function(){
 
 $("#menu").click(function(){
   $("#save").removeClass("inactive");
-  $("#blocker2").fadeIn();
+  $("#IniMenu").removeClass("inactive");
+  $("#loadMenu").addClass("inactive");
+  $("#blocker").fadeIn();
 });
 
   $("#CurrentlyPlaying").click(function(){
@@ -498,7 +497,7 @@ $("#menu").click(function(){
       PlaylistUrl = $("#URLinput > input").get(0).value;
       var INST = UrltoYQL(PlaylistUrl);
       GetList(INST);
-      $("#blocker2").fadeOut();
+      $("#blocker").fadeOut();
     });
   });
 
@@ -515,20 +514,20 @@ $("#menu").click(function(){
                   if(value!=null){
                   if (Modernizr.touch){
                   // $("#blocker > form > menu").prepend('<button ontouchstart="PressDown(this)" ontouchend="ReleaseUp(this)" id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
-                  $("#blocker > form > menu").prepend('<button id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
+                  $("#loadMenu").prepend('<button id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
                   $("#playlist"+value.number.toString()).on("touchstart",function(){PressDown(this);});
                   $("#playlist"+value.number.toString()).on("touchend",function(){ReleaseUp(this);});
                   }else{
                   // $("#blocker > form > menu").prepend('<button onmousedown="PressDown(this)" onmouseup="ReleaseUp(this)"   id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
-                  $("#blocker > form > menu").prepend('<button id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
+                  $("#loadMenu").prepend('<button id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
                   $("#playlist"+value.number.toString()).on("mousedown",function(){PressDown(this);});
                   $("#playlist"+value.number.toString()).on("mouseup",function(){ReleaseUp(this);});
                   }
                   }
       });
       }
-      $("#blocker2").fadeOut();
-      $("#blocker").toggleClass("inactive"); 
+      $("#IniMenu").addClass("inactive");
+      $("#loadMenu").removeClass("inactive");
     }
   });
 
@@ -536,12 +535,13 @@ $("#menu").click(function(){
   });
 
   $("#Cancel").click(function(){
-  $("#blocker").toggleClass("inactive");
-  $("#blocker2").fadeIn();
+    $("#loadMenu").addClass("inactive");
+    $("#loadMenu").html('<button id="Cancel"> Cancel </button>');
+    $("#IniMenu").removeClass("inactive");
   });
 
   $("#CloseUp").click(function(){
-        $("#blocker2").fadeOut();
+        $("#blocker").fadeOut();
   });
 
   // And here goes the listeners to make the loading pop up work

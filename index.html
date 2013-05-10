@@ -55,28 +55,20 @@
 		</div>
 
 
-         <div id="blocker2">
-<form role="dialog" data-type="action" onsubmit="return false;">
-<form id="secondForm" role="dialog" data-type="action">
-     <menu>
+
+<div id="blocker">
+    <form id="secondForm" role="dialog" data-type="action">
+      <menu id="IniMenu">
+     <button id="save" class="inactive"> Save Current Playlist </button> 	
      <button id="BrowsePlaylists"> Load saved playlist </button>
      <button id="AddYTP"> Add whole YT playlist </button>
-<!-- <div id="URLinput">
-<input type="text"/><button type="button" >OK</button>
-</div> -->
-       <button id="CloseUp"> Cancel </button>
+     <button id="CloseUp"> Cancel </button>
      </menu>
-   </form>
-   </div>
-
-<div id="blocker" class="inactive">
-<!-- <form role="dialog" data-type="action" onsubmit="return false;"> -->
-<form id="secondForm" role="dialog" data-type="action">
-     <menu>
+     <menu id="loadMenu" class="inactive">
        <button id="Cancel"> Cancel </button>
      </menu>
-   </form>
-   </div>
+    </form>
+</div>
 		<!-- <video controls='controls' id="player"/> -->
 		<audio id="player"/>
 	</body>

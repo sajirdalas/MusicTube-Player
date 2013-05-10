@@ -12,9 +12,5 @@ Stuff for developers:
 -playlist URLs are processed using YQL to return an array of each "songs" URL
 -Every individual URL is processed into an HTML5 audio tag using the youtube.js library extracted from Gaia's native video player
 -The Array with the links and the name of the playlists are saved using async storage
-
-Known bugs:
-
--The first action menu's cancel and load button are not working properly on the phone, but are on the emulator. Logcat is trowing an inline scripting error (investigating)
--The forms on the action menus have missing/unecesarry tags (working on this)
+-All menus use the action menu as seen here: https://developer.mozilla.org/en-US/docs/Mozilla/Firefox_OS/UX/Building_blocks/Action_menu/Coding, but with modifications.
 
