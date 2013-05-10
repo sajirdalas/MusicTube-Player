@@ -34,6 +34,7 @@
     },
     "permissions": {
     "systemXHR": { "description": "Required for youtube.js, the same javascript library used by the gaia video app to fetch youtube videos. See bugzilla bug 865091" },
-    "desktop-notification":{ "description": "for displaying error messages"}
+    "desktop-notification":{ "description": "for displaying error messages"},
+    "audio-channel-content":{"description":  "Use the audio channel for a music player"}
      }   
 }

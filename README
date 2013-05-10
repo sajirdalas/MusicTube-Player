@@ -14,3 +14,4 @@ Stuff for developers:
 -The Array with the links and the name of the playlists are saved using async storage
 -All menus use the action menu as seen here: https://developer.mozilla.org/en-US/docs/Mozilla/Firefox_OS/UX/Building_blocks/Action_menu/Coding, but with modifications.
 
+

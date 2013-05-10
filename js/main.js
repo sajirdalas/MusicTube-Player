@@ -484,6 +484,7 @@ $("#menu").click(function(){
          asyncStorage.setItem("NumSaved",SavedPlaylists);
          asyncStorage.setItem("playlist"+SavedPlaylists.toString()+"Obj",CurrentPlaylist);
       });
+      alert("Playlist saved");
     }
   });
 
