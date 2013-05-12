@@ -51,19 +51,35 @@ function PopulateScrollBar(ArtList){
           CurrentlyPressed=this;
           Timer=setTimeout(function(){
           PressTime=true;
-          alert("long click");
+          // alert("long click");
+          if(!HasScrolled){
           if(window.confirm("Are you sure you want to remove this song?")){
           var index = CurrentlyPressed.id.substr(3);
           CurrentPlaylist.ImgList.splice(index,1);
           CurrentPlaylist.LinkList.splice(index,1);
+
+          //Here is the rutine that reasigns the CurrentIndex
+
+          if(index<CurrentIndex){
+            CurrentIndex--;
+          }
+          else if(index==CurrentIndex){
+            if(playing){
+              PauseMusic();
+            }
+            $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[CurrentIndex]);
+            SetPlayer(CurrentIndex);
+          }
+
           $(CurrentlyPressed).remove();
           }
-          },1000);
+          }
+          },SystemTime);
         });
 
         $("#img"+i).on("touchend",function(){
-          if(!PressTime){
           clearTimeout(Timer);
+          if(!PressTime && !HasScrolled){
           // alert("short click");
           var index = this.id.substr(3);
           // Set album image
@@ -85,19 +101,34 @@ function PopulateScrollBar(ArtList){
           Timer=setTimeout(function(){
           PressTime=true;
           // alert("long click");
-
+          if(!HasScrolled){
           if(window.confirm("Are you sure you want to remove this song?")){
           var index = CurrentlyPressed.id.substr(3);
           CurrentPlaylist.ImgList.splice(index,1);
           CurrentPlaylist.LinkList.splice(index,1);
+
+          //Here is the rutine that reasigns the CurrentIndex
+          if(index<CurrentIndex){
+            CurrentIndex--;
+          }
+          else if(index==CurrentIndex){
+            if(playing){
+              PauseMusic();
+            }
+            $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[CurrentIndex]);
+            SetPlayer(CurrentIndex);
+          }
+
+          
           $(CurrentlyPressed).remove();
+          }
           }
           },1000);
         });
 
         $("#img"+i).on("mouseup",function(){
-          if(!PressTime){
           clearTimeout(Timer);
+          if(!PressTime && !HasScrolled){
           // alert("short click");
           var index = this.id.substr(3);
           // Set album image
@@ -174,7 +205,7 @@ function process_list(o){
  // console.log("process_list executed");
  if(o.query.results==null){
   alert("Wrong link or ID!");
-  location.reload(); 
+  return false;
  }
 var result_list = o.query.results.a;
 var TempLinkList = new Array;
@@ -242,6 +273,7 @@ function loadFirstTrack(){
 }
 
 function PauseMusic(){
+  $("#toast").fadeOut();
   $("#playImg").attr("src","img/play.png");
       playing=false;
       console.log("switch to paused");
@@ -279,13 +311,14 @@ function PressDown(e){
   Timer=setTimeout(function(){
     PressTime=true;
     // alert("long click");
-    DeleteElement();
-  },1000);
+    if(!HasScrolled){
+    DeleteElement();}
+  },SystemTime);
 }
 
 
 function ReleaseUp(e){
-  if(!PressTime){
+  if(!PressTime && !HasScrolled){
     clearTimeout(Timer);
     // alert("short click");
     selectListElement(e);
@@ -326,6 +359,7 @@ function ReturnFalse(){
 // }
 
 firstExec = true;
+SystemTime=1000;
 document.ready = function(){
  CurrentPlaylist = new Object();
  console.log("ready triggered");
@@ -344,6 +378,21 @@ document.ready = function(){
   PressTime=false;
   Timer = null;
   CurrentlyPressed = null;
+  HasScrolled=false;
+  ResetScroll = null;
+
+  //Added function to check if scroll bar has scrolled
+
+  $(".scrollable").scroll(function(){
+    // console.log("scrolling");
+    HasScrolled=true;
+    if(ResetScroll!=null){
+      clearTimeout(ResetScroll);
+    }
+    ResetScroll=setTimeout(function(){
+      HasScrolled=false;
+    },SystemTime);
+  });
 
    $("#secondForm").get(0).onsubmit = function(){return false;}
 

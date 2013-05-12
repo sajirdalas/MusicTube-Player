@@ -15,3 +15,6 @@ Stuff for developers:
 -All menus use the action menu as seen here: https://developer.mozilla.org/en-US/docs/Mozilla/Firefox_OS/UX/Building_blocks/Action_menu/Coding, but with modifications.
 
 
+Known bugs:
+-Strange, hard to replicate behavior when 3G or Wifi signal is weak.
+-THe menu displaying saved playlists is not scrolling

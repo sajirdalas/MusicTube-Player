@@ -271,6 +271,9 @@ body{
 	height: 100%;
 }
 
+menu{
+	overflow: scroll;
+}
 
 /*The loading pop up*/
 
