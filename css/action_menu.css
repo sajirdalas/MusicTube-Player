@@ -74,6 +74,8 @@ form[role="dialog"][data-type="object"] > menu {
   left: 0;
   right: 0;
   bottom: 0;
+  height: auto;
+  max-height: 100%;
 }
 
 form[role="dialog"][data-type="action"] > menu > button,
@@ -112,8 +114,8 @@ form[role="dialog"][data-type="object"] > menu > button:last-child {
   font-size: 1.6rem;
 }
 
-form[role="dialog"][data-type="action"] > menu > button:last-child:before,
-form[role="dialog"][data-type="object"] > menu > button:last-child:before {
+form[role="dialog"][data-type="action"] > #IniMenu > button:last-child:before,
+form[role="dialog"][data-type="object"] > #IniMenu > button:last-child:before {
   content: '';
   position: absolute;
   width: 100%;

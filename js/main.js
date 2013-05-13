@@ -38,7 +38,7 @@ function SetPlayerandPlay(index){
         });
 }
 
-function PopulateScrollBar(ArtList){
+function PopulateScrollBar(ArtList,ShouldLoadFirstTrack){
   $("#scrollbar").html("");
   for (var i = 0; i < ArtList.length; i++) {
     $("#scrollbar").append('<img src="'+ArtList[i]+'" class="AlbumArt"'+"id=img"+i+'></img>');
@@ -66,6 +66,9 @@ function PopulateScrollBar(ArtList){
           else if(index==CurrentIndex){
             if(playing){
               PauseMusic();
+            }
+            if(CurrentIndex==CurrentPlaylist.LinkList.length){
+              CurrentIndex--;
             }
             $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[CurrentIndex]);
             SetPlayer(CurrentIndex);
@@ -115,6 +118,9 @@ function PopulateScrollBar(ArtList){
             if(playing){
               PauseMusic();
             }
+            if(CurrentIndex==CurrentPlaylist.LinkList.length){
+              CurrentIndex--;
+            }
             $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[CurrentIndex]);
             SetPlayer(CurrentIndex);
           }
@@ -148,7 +154,8 @@ function PopulateScrollBar(ArtList){
 
 
   };
-  loadFirstTrack();
+  if(ShouldLoadFirstTrack){
+  loadFirstTrack();}
 }
 
 function GetImgList(Links){
@@ -232,7 +239,7 @@ if(TempLinkList.length!=0){
 }
 
 GetImgList(CurrentPlaylist.LinkList);
-PopulateScrollBar(CurrentPlaylist.ImgList);
+PopulateScrollBar(CurrentPlaylist.ImgList,true);
 
 
 }
@@ -254,6 +261,7 @@ function seek(e){
 }
 
 function loadNextTrack(){
+  ResetProgressBar();
   if(Shuffle){
         CurrentIndex=Math.floor(Math.random()*CurrentPlaylist.ImgList.length);
       }else{
@@ -261,8 +269,6 @@ function loadNextTrack(){
       $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[CurrentIndex]);
 
       SetPlayerandPlay(CurrentIndex);
-
-      //Bug: PlayMusic() executes before SetPlayer has its callback
 
 }
 
@@ -298,7 +304,7 @@ function selectListElement(e){
   console.log(id+"Obj");
   asyncStorage.getItem(id+"Obj",function(value){
     CurrentPlaylist = value;
-    PopulateScrollBar(CurrentPlaylist.ImgList);
+    PopulateScrollBar(CurrentPlaylist.ImgList,true);
     $("#blocker").fadeOut();
     $("#loadMenu").html('<button id="Cancel"> Cancel </button>');
   });
@@ -396,9 +402,6 @@ document.ready = function(){
 
    $("#secondForm").get(0).onsubmit = function(){return false;}
 
-  // $("#InitialMenu").get(0).onsubmit = "return false;"
-  // $("#LoadMenu").get(0).onsubmit = "return false;"
-
   playing=false;
   ThePlayer = document.getElementById("player");
   $("#play").click(function(){
@@ -424,7 +427,7 @@ document.ready = function(){
   });
 
   $("#back").click(function(){
-    $("#toast").fadeIn();
+    $("#toast").fadeOut();
     if(CurrentIndex!=0){
       if(Shuffle){
         CurrentIndex=Math.floor(Math.random()*CurrentPlaylist.ImgList.length);
@@ -447,7 +450,7 @@ document.ready = function(){
 
 
 $("#foward").click(function(){
-    $("#toast").fadeIn();
+    $("#toast").fadeOut();
     if(CurrentIndex!=CurrentPlaylist.ImgList.length){
       if(Shuffle){
         CurrentIndex=Math.floor(Math.random()*CurrentPlaylist.ImgList.length);
@@ -496,10 +499,6 @@ $("#menu").click(function(){
   if(navigator.mozSetMessageHandler!=undefined){
   navigator.mozSetMessageHandler('activity', function(activityRequest) {
   console.log("web activity triggered");
-  if(playing){
-    PauseMusic();
-  }
-  CurrentIndex=0;
   var TheUrl = activityRequest.source.data.url;
   TheUrl = TheUrl.substring(TheUrl.indexOf("///")+3,TheUrl.indexOf("?"));
   TheImg = "http://img.youtube.com/vi/"+TheUrl+"/0.jpg";
@@ -511,7 +510,7 @@ $("#menu").click(function(){
   }
   CurrentPlaylist.LinkList.push(TheUrl);
   GetImgList(CurrentPlaylist.LinkList);
-  PopulateScrollBar(CurrentPlaylist.ImgList);
+  PopulateScrollBar(CurrentPlaylist.ImgList,false);
 
 });
 }
