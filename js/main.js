@@ -1,25 +1,32 @@
 
 
 function SetPlayer(index){
+        ResetProgressBar();
         var TempString = CurrentPlaylist.LinkList[index].substring("/watch?v=".length,CurrentPlaylist.LinkList[index].indexOf("&list="));
 
         getYoutubeVideo("vnd.youtube:///"+TempString+"?vndapp=youtube_mobile&vndclient=mv-google&", function(a,b){
           $("#SongName").html(b);
           $("#player").attr("src",a);
           $("#player").load();
-        }, function(){
+        }, function(e){
           Notification = navigator.mozNotification.createNotification(
               "Error",
-              "copyright protected video accesed. Playback stopped");
+              "Error on video. Playback stopped");
           Notification.show();
-          window.alert("Sorry! Video deleted or copyright protected");
+          if(e.indexOf("<")!=-1){
+          window.alert("Error: "+e.substring(0,e.indexOf("<")));}
+          else{
+          window.alert("Error: "+e); 
+          }
           $("#SongName").html("ERROR");
           $("#player").attr("src","");
         });
-
+        $(".AlbumArt").css("border","0px");
+        $("#img"+index).css("border","1px solid yellow");
 }
 
 function SetPlayerandPlay(index){
+        ResetProgressBar();
         var TempString = CurrentPlaylist.LinkList[index].substring("/watch?v=".length,CurrentPlaylist.LinkList[index].indexOf("&list="));
         
         getYoutubeVideo("vnd.youtube:///"+TempString+"?vndapp=youtube_mobile&vndclient=mv-google&", function(a,b){
@@ -36,6 +43,8 @@ function SetPlayerandPlay(index){
           $("#SongName").html("ERROR");
           loadNextTrack();
         });
+        $(".AlbumArt").css("border","0px");
+        $("#img"+index).css("border","1px solid yellow");
 }
 
 function PopulateScrollBar(ArtList,ShouldLoadFirstTrack){
@@ -74,7 +83,9 @@ function PopulateScrollBar(ArtList,ShouldLoadFirstTrack){
             SetPlayer(CurrentIndex);
           }
 
-          $(CurrentlyPressed).remove();
+          // $(CurrentlyPressed).remove();
+          //And then we recreate the scroll bar contents so each id is in sync
+          PopulateScrollBar(CurrentPlaylist.ImgList,false);
           }
           }
           },SystemTime);
@@ -126,7 +137,7 @@ function PopulateScrollBar(ArtList,ShouldLoadFirstTrack){
           }
 
           
-          $(CurrentlyPressed).remove();
+          PopulateScrollBar(CurrentPlaylist.ImgList,false);
           }
           }
           },1000);
@@ -155,7 +166,10 @@ function PopulateScrollBar(ArtList,ShouldLoadFirstTrack){
 
   };
   if(ShouldLoadFirstTrack){
-  loadFirstTrack();}
+  loadFirstTrack();}else{
+  $("#img"+CurrentIndex).css("border","1px solid yellow");
+    // console.log("GOT HERE WITH INDEX "+index);
+  }
 }
 
 function GetImgList(Links){
@@ -266,14 +280,18 @@ function loadNextTrack(){
         CurrentIndex=Math.floor(Math.random()*CurrentPlaylist.ImgList.length);
       }else{
       CurrentIndex++;}
+      if(CurrentIndex<=CurrentPlaylist.ImgList.length){
       $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[CurrentIndex]);
 
       SetPlayerandPlay(CurrentIndex);
-
+      }else{
+        PauseMusic();
+        CurrentIndex=CurrentPlaylist.ImgList.length;
+      }
 }
 
 function loadFirstTrack(){
-      $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[CurrentIndex]);
+      $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[0]);
       SetPlayer(0);
 
 }
@@ -306,7 +324,11 @@ function selectListElement(e){
     CurrentPlaylist = value;
     PopulateScrollBar(CurrentPlaylist.ImgList,true);
     $("#blocker").fadeOut();
-    $("#loadMenu").html('<button id="Cancel"> Cancel </button>');
+    $(".RemovableButton").remove();
+    if(playing){
+      PauseMusic();
+    }
+    ResetProgressBar();
   });
 
 }
@@ -384,20 +406,25 @@ document.ready = function(){
   PressTime=false;
   Timer = null;
   CurrentlyPressed = null;
+  NumScrolled=0;
   HasScrolled=false;
   ResetScroll = null;
 
   //Added function to check if scroll bar has scrolled
 
   $(".scrollable").scroll(function(){
+    NumScrolled++;
     // console.log("scrolling");
+    if(NumScrolled==5){
     HasScrolled=true;
     if(ResetScroll!=null){
       clearTimeout(ResetScroll);
     }
     ResetScroll=setTimeout(function(){
       HasScrolled=false;
+      NumScrolled=0;
     },SystemTime);
+    }
   });
 
    $("#secondForm").get(0).onsubmit = function(){return false;}
@@ -563,12 +590,12 @@ $("#menu").click(function(){
                   if(value!=null){
                   if (Modernizr.touch){
                   // $("#blocker > form > menu").prepend('<button ontouchstart="PressDown(this)" ontouchend="ReleaseUp(this)" id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
-                  $("#loadMenu").prepend('<button id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
+                  $("#loadMenu").prepend('<button class="RemovableButton" id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
                   $("#playlist"+value.number.toString()).on("touchstart",function(){PressDown(this);});
                   $("#playlist"+value.number.toString()).on("touchend",function(){ReleaseUp(this);});
                   }else{
                   // $("#blocker > form > menu").prepend('<button onmousedown="PressDown(this)" onmouseup="ReleaseUp(this)"   id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
-                  $("#loadMenu").prepend('<button id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
+                  $("#loadMenu").prepend('<button class="RemovableButton" id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
                   $("#playlist"+value.number.toString()).on("mousedown",function(){PressDown(this);});
                   $("#playlist"+value.number.toString()).on("mouseup",function(){ReleaseUp(this);});
                   }
@@ -585,7 +612,7 @@ $("#menu").click(function(){
 
   $("#Cancel").click(function(){
     $("#loadMenu").addClass("inactive");
-    $("#loadMenu").html('<button id="Cancel"> Cancel </button>');
+    $(".RemovableButton").remove();
     $("#IniMenu").removeClass("inactive");
   });
 
@@ -606,5 +633,9 @@ $("#menu").click(function(){
     $("#toast").fadeOut();
   });
 
+//   $("audio").on("error",function(){
+//     alert("Audio error");
+//     $("#toast").fadeOut();
+// });
 }
 }
