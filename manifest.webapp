@@ -1,8 +1,9 @@
 {
-    "name": "musicTube player",
+    "name": "musicTube player alpha",
     "description": "add music from youtube. Play, listen and enjoy",
     "launch_path": "/index.html",
     "type" : "privileged",
+    "version": "1.1",
     "icons": {
         "60": "/img/art60.png",
         "128": "/img/art128.png"
@@ -11,6 +12,11 @@
         "name": "Sajirdalas"
     },
     "default_locale": "en",
+    "locales": {
+        "es": {
+            "launch_path": "/index_spa.html"
+            }
+    },
     "installs_allowed_from": [
         "*"
     ],

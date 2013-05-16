@@ -1,6 +1,6 @@
 
 
-function SetPlayer(index){
+function SetPlayer(index,ShouldPlay){
         ResetProgressBar();
         var TempString = CurrentPlaylist.LinkList[index].substring("/watch?v=".length,CurrentPlaylist.LinkList[index].indexOf("&list="));
 
@@ -8,11 +8,20 @@ function SetPlayer(index){
           $("#SongName").html(b);
           $("#player").attr("src",a);
           $("#player").load();
+          if(ShouldPlay){
+            PlayMusic();
+          }
         }, function(e){
+          if($("html").attr("lang")=="en"){
           Notification = navigator.mozNotification.createNotification(
               "Error",
-              "Error on video. Playback stopped");
+              "Error on video. Playback stopped");}
+          if($("html").attr("lang")=="es"){
+          Notification = navigator.mozNotification.createNotification(
+              "Error",
+              "Error en el video. Reproducción cancelada");}
           Notification.show();
+
           if(e.indexOf("<")!=-1){
           window.alert("Error: "+e.substring(0,e.indexOf("<")));}
           else{
@@ -20,28 +29,9 @@ function SetPlayer(index){
           }
           $("#SongName").html("ERROR");
           $("#player").attr("src","");
-        });
-        $(".AlbumArt").css("border","0px");
-        $("#img"+index).css("border","1px solid yellow");
-}
-
-function SetPlayerandPlay(index){
-        ResetProgressBar();
-        var TempString = CurrentPlaylist.LinkList[index].substring("/watch?v=".length,CurrentPlaylist.LinkList[index].indexOf("&list="));
-        
-        getYoutubeVideo("vnd.youtube:///"+TempString+"?vndapp=youtube_mobile&vndclient=mv-google&", function(a,b){
-          $("#SongName").html(b);
-          $("#player").attr("src",a);
-          $("#player").load();
-          PlayMusic();
-        }, function(){
-          Notification = navigator.mozNotification.createNotification(
-              "Error",
-              "copyright protected video accesed. Playback stopped");
-          Notification.show();
-          window.alert("Sorry! Video deleted or copyright protected");
-          $("#SongName").html("ERROR");
-          loadNextTrack();
+          if(ShouldPlay){
+            loadNextTrack();
+          }
         });
         $(".AlbumArt").css("border","0px");
         $("#img"+index).css("border","1px solid yellow");
@@ -53,22 +43,25 @@ function PopulateScrollBar(ArtList,ShouldLoadFirstTrack){
     $("#scrollbar").append('<img src="'+ArtList[i]+'" class="AlbumArt"'+"id=img"+i+'></img>');
 
       //Add the click or touch listeners for every song
+          // $("#img"+i).on("taphold",function(e){
+          //   console.log("taphold");
+          // });
+          // $("#img"+i).on("click",function(e){
+          //   console.log("tap");
+          // });
 
-      if (Modernizr.touch){
-        $("#img"+i).on("touchstart",function(){
-          PressTime=false;
-          CurrentlyPressed=this;
-          Timer=setTimeout(function(){
+        $("#img"+i).on("taphold",function(e){
           PressTime=true;
-          // alert("long click");
-          if(!HasScrolled){
-          if(window.confirm("Are you sure you want to remove this song?")){
-          var index = CurrentlyPressed.id.substr(3);
+          if($("html").attr("lang")=="en"){
+          var Message="Are you sure you want to remove this song?";}
+          if($("html").attr("lang")=="es"){
+          var Message="¿Seguro que deseas eliminar esta canción?";}  
+          if(window.confirm(Message)){
+          var index = e.target.id.substr(3);
           CurrentPlaylist.ImgList.splice(index,1);
           CurrentPlaylist.LinkList.splice(index,1);
 
           //Here is the rutine that reasigns the CurrentIndex
-
           if(index<CurrentIndex){
             CurrentIndex--;
           }
@@ -80,91 +73,27 @@ function PopulateScrollBar(ArtList,ShouldLoadFirstTrack){
               CurrentIndex--;
             }
             $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[CurrentIndex]);
-            SetPlayer(CurrentIndex);
+            SetPlayer(CurrentIndex,false);
           }
-
-          // $(CurrentlyPressed).remove();
           //And then we recreate the scroll bar contents so each id is in sync
           PopulateScrollBar(CurrentPlaylist.ImgList,false);
           }
-          }
-          },SystemTime);
-        });
-
-        $("#img"+i).on("touchend",function(){
-          clearTimeout(Timer);
-          if(!PressTime && !HasScrolled){
-          // alert("short click");
-          var index = this.id.substr(3);
-          // Set album image
-          CurrentIndex = parseInt(index);
-         $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[index]);
-          //Pause anything if playing
-          if(playing){
-          PauseMusic();
-          SetPlayerandPlay(CurrentIndex);
-          }else{
-            SetPlayer(CurrentIndex);
-               }
-                     }
-        });
-      }else{
-          $("#img"+i).on("mousedown",function(){
           PressTime=false;
-          CurrentlyPressed=this;
-          Timer=setTimeout(function(){
-          PressTime=true;
-          // alert("long click");
-          if(!HasScrolled){
-          if(window.confirm("Are you sure you want to remove this song?")){
-          var index = CurrentlyPressed.id.substr(3);
-          CurrentPlaylist.ImgList.splice(index,1);
-          CurrentPlaylist.LinkList.splice(index,1);
-
-          //Here is the rutine that reasigns the CurrentIndex
-          if(index<CurrentIndex){
-            CurrentIndex--;
-          }
-          else if(index==CurrentIndex){
-            if(playing){
-              PauseMusic();
-            }
-            if(CurrentIndex==CurrentPlaylist.LinkList.length){
-              CurrentIndex--;
-            }
-            $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[CurrentIndex]);
-            SetPlayer(CurrentIndex);
-          }
-
-          
-          PopulateScrollBar(CurrentPlaylist.ImgList,false);
-          }
-          }
-          },1000);
         });
 
-        $("#img"+i).on("mouseup",function(){
-          clearTimeout(Timer);
-          if(!PressTime && !HasScrolled){
-          // alert("short click");
-          var index = this.id.substr(3);
+        $("#img"+i).on("tap",function(e){
+          if(!PressTime){
+          var index = e.target.id.substr(3);
           // Set album image
           CurrentIndex = parseInt(index);
          $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[index]);
           //Pause anything if playing
-          if(playing){
-          PauseMusic();
-          SetPlayerandPlay(CurrentIndex);
-          }else{
-            SetPlayer(CurrentIndex);
-               }
-                     }
+          SetPlayer(CurrentIndex,playing);
+          }             
         });
+      
       }
-
-
-
-  };
+      
   if(ShouldLoadFirstTrack){
   loadFirstTrack();}else{
   $("#img"+CurrentIndex).css("border","1px solid yellow");
@@ -225,7 +154,10 @@ function UrltoYQL(youtubeURL){
 function process_list(o){
  // console.log("process_list executed");
  if(o.query.results==null){
-  alert("Wrong link or ID!");
+  if($("html").attr("lang")=="en"){
+  alert("Wrong link or ID!");}
+  if($("html").attr("lang")=="es"){
+  alert("¡Enlace o ID erróneo!");}
   return false;
  }
 var result_list = o.query.results.a;
@@ -283,7 +215,7 @@ function loadNextTrack(){
       if(CurrentIndex<=CurrentPlaylist.ImgList.length){
       $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[CurrentIndex]);
 
-      SetPlayerandPlay(CurrentIndex);
+      SetPlayer(CurrentIndex,false);
       }else{
         PauseMusic();
         CurrentIndex=CurrentPlaylist.ImgList.length;
@@ -292,7 +224,7 @@ function loadNextTrack(){
 
 function loadFirstTrack(){
       $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[0]);
-      SetPlayer(0);
+      SetPlayer(0,false);
 
 }
 
@@ -318,6 +250,7 @@ function ResetProgressBar(){
 }
 
 function selectListElement(e){
+  if(!PressTime){
   var id = e.id;
   console.log(id+"Obj");
   asyncStorage.getItem(id+"Obj",function(value){
@@ -330,41 +263,26 @@ function selectListElement(e){
     }
     ResetProgressBar();
   });
-
-}
-
-function PressDown(e){
-  PressTime=false;
-  CurrentlyPressed=e;
-  Timer=setTimeout(function(){
-    PressTime=true;
-    // alert("long click");
-    if(!HasScrolled){
-    DeleteElement();}
-  },SystemTime);
-}
-
-
-function ReleaseUp(e){
-  if(!PressTime && !HasScrolled){
-    clearTimeout(Timer);
-    // alert("short click");
-    selectListElement(e);
   }
 }
 
-function DeleteElement(){
-  var confirm = window.confirm("Are you sure you want to remove this playlist?");
-  PressTime=false;
+
+function DeleteElement(element){
+  PressTime=true;
+  if($("html").attr("lang")=="en"){
+  var confirm = window.confirm("Are you sure you want to remove this playlist?");}
+  if($("html").attr("lang")=="es"){
+  var confirm = window.confirm("¿Estas seguro que quieres eliminar esta lista de reproducción?");}
       if(confirm){
         asyncStorage.getItem("NumSaved",function(value){
-          var id = CurrentlyPressed.id;
+          var id = element.id;
           var num = parseInt(id.substring(8));
           var SavedPlaylists = parseInt(value);
           asyncStorage.removeItem(id+"Obj");
-          $(CurrentlyPressed).remove();
+          $(element).remove();
         });
    }
+  PressTime=false;
 }
 
 function ReturnFalse(){
@@ -402,30 +320,13 @@ document.ready = function(){
   1. Pass youtube playlist link to UrltoYQL, returns a string with the YQL syntax
   2. Pass YQL syntax to GetList, list of playlist youtube URLS returns in CurrentPlaylist.LinkList variable, list of images in CurrentPlaylist.ImgList.
   */
+
+  //Global Variable used to keep track of the Index of the song Currently Selected
   CurrentIndex=0;
+  //Global Variable used to keep track if long press events have been triggered
   PressTime=false;
-  Timer = null;
-  CurrentlyPressed = null;
-  NumScrolled=0;
-  HasScrolled=false;
-  ResetScroll = null;
 
   //Added function to check if scroll bar has scrolled
-
-  $(".scrollable").scroll(function(){
-    NumScrolled++;
-    // console.log("scrolling");
-    if(NumScrolled==5){
-    HasScrolled=true;
-    if(ResetScroll!=null){
-      clearTimeout(ResetScroll);
-    }
-    ResetScroll=setTimeout(function(){
-      HasScrolled=false;
-      NumScrolled=0;
-    },SystemTime);
-    }
-  });
 
    $("#secondForm").get(0).onsubmit = function(){return false;}
 
@@ -462,14 +363,13 @@ document.ready = function(){
       CurrentIndex--;}
       $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[CurrentIndex]);
 
-        // SetPlayer(CurrentIndex);
         ResetProgressBar();
         //Pause anything if playing
         if(playing){
         PauseMusic();
-        SetPlayerandPlay(CurrentIndex);
+        SetPlayer(CurrentIndex,true);
         }else{
-          SetPlayer(CurrentIndex);
+          SetPlayer(CurrentIndex,false);
         }
 
     }
@@ -485,14 +385,13 @@ $("#foward").click(function(){
       CurrentIndex++;}
       $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[CurrentIndex]);
 
-      //SetPlayer(CurrentIndex);
       ResetProgressBar();
         //Pause anything if playing
         if(playing){
         PauseMusic();
-        SetPlayerandPlay(CurrentIndex);
+        SetPlayer(CurrentIndex,true);
         }else{
-          SetPlayer(CurrentIndex);
+          SetPlayer(CurrentIndex,false);
         }
 
     }
@@ -532,22 +431,27 @@ $("#menu").click(function(){
   TheUrl = "/watch?v="+TheUrl+"&list=";
   console.log(TheUrl);
   console.log(TheImg);
-  if(typeof CurrentPlaylist.LinkList === "undefined"){
-    CurrentPlaylist.LinkList = new Array();
-  }
+  var FirstTime = (CurrentPlaylist.LinkList.length == 0);
+  console.log(FirstTime);
   CurrentPlaylist.LinkList.push(TheUrl);
   GetImgList(CurrentPlaylist.LinkList);
-  PopulateScrollBar(CurrentPlaylist.ImgList,false);
+  PopulateScrollBar(CurrentPlaylist.ImgList,FirstTime);
 
 });
 }
   //Here goes everything related to saving the playlists
 
   $("#save").click(function(){
-      // console.log("saved clicked");
-      var confirm = window.confirm("Are you sure you want to save this playlist?");
+      if($("html").attr("lang")=="en"){
+      var confirm = window.confirm("Are you sure you want to save this playlist?");}
+      if($("html").attr("lang")=="es"){
+      var confirm = window.confirm("¿Estas seguro que quieres guardar esta lista de reproducción? ");}
+
       if(confirm){
-      CurrentPlaylist.playlistName = prompt("Playlist name to save:","Random Playlist");
+      if($("html").attr("lang")=="en"){
+      CurrentPlaylist.playlistName = prompt("Playlist name to save:","");}
+      if($("html").attr("lang")=="es"){
+      CurrentPlaylist.playlistName = prompt("Nombre de lista a guardar:","");}
       asyncStorage.getItem("NumSaved",function(value){
         if(value==null){
           var SavedPlaylists = 0;
@@ -581,24 +485,22 @@ $("#menu").click(function(){
 
   asyncStorage.getItem("NumSaved",function(value){
     if(value==null){
-      window.alert("No playlists saved in memory!");
+      if($("html").attr("lang")=="en"){
+      window.alert("No playlists saved in memory!");}
+      if($("html").attr("lang")=="es"){
+      window.alert("No hay listas guardadas en memoria");}
     }else{
 
       var SavedPlaylists = parseInt(value);
       for (var i = 1; i<SavedPlaylists+1; i++) {
         asyncStorage.getItem("playlist"+i.toString()+"Obj",function(value){
                   if(value!=null){
-                  if (Modernizr.touch){
+
                   // $("#blocker > form > menu").prepend('<button ontouchstart="PressDown(this)" ontouchend="ReleaseUp(this)" id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
                   $("#loadMenu").prepend('<button class="RemovableButton" id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
-                  $("#playlist"+value.number.toString()).on("touchstart",function(){PressDown(this);});
-                  $("#playlist"+value.number.toString()).on("touchend",function(){ReleaseUp(this);});
-                  }else{
-                  // $("#blocker > form > menu").prepend('<button onmousedown="PressDown(this)" onmouseup="ReleaseUp(this)"   id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
-                  $("#loadMenu").prepend('<button class="RemovableButton" id="playlist'+value.number.toString()+'">'+value.playlistName+'</button>');
-                  $("#playlist"+value.number.toString()).on("mousedown",function(){PressDown(this);});
-                  $("#playlist"+value.number.toString()).on("mouseup",function(){ReleaseUp(this);});
-                  }
+                  $("#playlist"+value.number.toString()).on("tap",function(evnt){selectListElement(evnt.target)});
+                  $("#playlist"+value.number.toString()).on("taphold",function(evnt){DeleteElement(evnt.target)});
+
                   }
       });
       }
@@ -624,7 +526,10 @@ $("#menu").click(function(){
 
     $("audio").on("waiting",function(){
     // $("#toast").removeClass("hidden");
-    $("#toast").contents()[2].nodeValue = "Buffering. Please Wait";
+    if($("html").attr("lang")=="en"){
+    $("#toast").contents()[2].nodeValue = "Buffering. Please Wait";}
+    if($("html").attr("lang")=="es"){
+    $("#toast").contents()[2].nodeValue = "Cargando. Por favor espere";}
     $("#toast").fadeIn();
   });
 

@@ -14,5 +14,7 @@ Stuff for developers:
 -The Array with the links and the name of the playlists are saved using async storage
 -All menus use the action menu as seen here: https://developer.mozilla.org/en-US/docs/Mozilla/Firefox_OS/UX/Building_blocks/Action_menu/Coding, but with modifications here and there.
 
-Know bugs
--Wrong albun art is loaded when loading diferent playlists
+Recent changes
+-Fixed some rebundant code
+-Tab and LongTab events are now managed by jquery mobile
+-Now in 2 lenguagues
