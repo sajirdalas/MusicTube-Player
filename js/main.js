@@ -139,13 +139,14 @@ function UrltoYQL(youtubeURL){
 
   // console.log("result of link: "+result);
   result = result.replace(/&/g,"%26").replace(/=/g,"%3D").replace(/\//g,"%2F").replace(/:/g,"%3A");
-  result = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22https%3A%2F%2Fwww.youtube.com%2Fplaylist%3Flist%3D" +
-            result + "%22%20and%20xpath%3D'%2F%2Fdiv%5Bcontains(%40class%2C%22video-info%22)%5D'&format=json&diagnostics=true&callback=process_list";
+  result = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22http%3A%2F%2Fwww.youtube.com%2Fplaylist%3Flist%3D" +
+            result + "%22and%20xpath%3D'%2F%2Fdiv%5Bcontains(%40class%2C%22video-info%22)%5D'&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
   
-  // if(result=="http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DzHMJ03IhroE%26feature%3Dshare%26list%3DPLLA7WhEJhN5wnO0P6vChk-5YCM067bWnV%22%20and%20xpath%3D'%2F%2Fli%5Bcontains(%40class%2C%22video-list-item%20yt-uix-scroller-scroll-unit%22)%5D'&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=process_list"){
-  // console.log("yes");}else{
-  //   console.log("NO");
-  // }
+  if(result=="http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22http%3A%2F%2Fwww.youtube.com%2Fplaylist%3Flist%3DPL63F0C78739B09958%22and%20xpath%3D'%2F%2Fdiv%5Bcontains(%40class%2C%22video-info%22)%5D'&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=process_list"){
+  console.log("yes");}else{
+    console.log("NO");
+    console.log(result);
+  }
   return result;
 }
 
@@ -177,7 +178,7 @@ if(CurrentPlaylist.LinkList.length!=0){
 CurrentPlaylist.LinkList = new Array(result_list.length);
 for(var x=0;x<result_list.length;x++){
   // console.log(result_list[x].a.href);
-  CurrentPlaylist.LinkList[x]=result_list[x].href;
+  CurrentPlaylist.LinkList[x]=result_list[x].div.h3.a.href;
 }
 
 if(TempLinkList.length!=0){
