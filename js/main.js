@@ -29,9 +29,7 @@ function SetPlayer(index,ShouldPlay){
           }
           $("#SongName").html("ERROR");
           $("#player").attr("src","");
-          if(ShouldPlay){
-            loadNextTrack();
-          }
+          loadNextTrack();
         });
         $(".AlbumArt").css("border","0px");
         $("#img"+index).css("border","1px solid yellow");
@@ -141,8 +139,8 @@ function UrltoYQL(youtubeURL){
 
   // console.log("result of link: "+result);
   result = result.replace(/&/g,"%26").replace(/=/g,"%3D").replace(/\//g,"%2F").replace(/:/g,"%3A");
-  result = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22http%3A%2F%2Fwww.youtube.com%2Fplaylist%3Flist%3D" +
-            result + "%22%20and%20xpath%3D'%2F%2Fa%5Bcontains(%40class%2C%22yt-uix-tile-link%22)%5D'&format=json&diagnostics=true";
+  result = "http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22https%3A%2F%2Fwww.youtube.com%2Fplaylist%3Flist%3D" +
+            result + "%22%20and%20xpath%3D'%2F%2Fdiv%5Bcontains(%40class%2C%22video-info%22)%5D'&format=json&diagnostics=true&callback=process_list";
   
   // if(result=="http://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20html%20where%20url%3D%22http%3A%2F%2Fwww.youtube.com%2Fwatch%3Fv%3DzHMJ03IhroE%26feature%3Dshare%26list%3DPLLA7WhEJhN5wnO0P6vChk-5YCM067bWnV%22%20and%20xpath%3D'%2F%2Fli%5Bcontains(%40class%2C%22video-list-item%20yt-uix-scroller-scroll-unit%22)%5D'&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=process_list"){
   // console.log("yes");}else{
@@ -152,7 +150,9 @@ function UrltoYQL(youtubeURL){
 }
 
 function process_list(o){
- // console.log("process_list executed");
+ console.log("process_list executed");
+
+ //I have to fix this translation issue here
  if(o.query.results==null){
   if($("html").attr("lang")=="en"){
   alert("Wrong link or ID!");}
@@ -160,11 +160,11 @@ function process_list(o){
   alert("¡Enlace o ID erróneo!");}
   return false;
  }
-var result_list = o.query.results.a;
+var result_list = o.query.results.div;
 var TempLinkList = new Array;
 
 for(var z=0;z<result_list.length;z++){
-  if(result_list[z].href.indexOf("/watch")==-1){
+  if(result_list[z].div.h3.a.href.indexOf("/watch")==-1){
     result_list.splice(z,result_list.length-z);
     z=result_list.length+1;
   }
@@ -215,7 +215,7 @@ function loadNextTrack(){
       if(CurrentIndex<=CurrentPlaylist.ImgList.length){
       $("#CurrentlyPlaying").attr("src",CurrentPlaylist.ImgList[CurrentIndex]);
 
-      SetPlayer(CurrentIndex,false);
+      SetPlayer(CurrentIndex,true);
       }else{
         PauseMusic();
         CurrentIndex=CurrentPlaylist.ImgList.length;
@@ -409,7 +409,7 @@ $("#menu").click(function(){
     $("#CurrentlyPlaying").get(0).addEventListener("animationend",function(){$("#CurrentlyPlaying").css("animation","");},false);
   });
 
-  ThePlayer.addEventListener("ended",loadNextTrack,false);
+  ThePlayer.addEventListener("ended",function(){loadNextTrack();},false);
 
   ProgressBar = document.getElementById("ProgressBar");
   SeekBar = document.getElementById("SeekBar");
@@ -526,10 +526,10 @@ $("#menu").click(function(){
 
     $("audio").on("waiting",function(){
     // $("#toast").removeClass("hidden");
-    if($("html").attr("lang")=="en"){
-    $("#toast").contents()[2].nodeValue = "Buffering. Please Wait";}
-    if($("html").attr("lang")=="es"){
-    $("#toast").contents()[2].nodeValue = "Cargando. Por favor espere";}
+    // if($("html").attr("lang")=="en"){
+    // $("#toast").contents()[2].nodeValue = "Buffering. Please Wait";}
+    // if($("html").attr("lang")=="es"){
+    // $("#toast").contents()[2].nodeValue = "Cargando. Por favor espere";}
     $("#toast").fadeIn();
   });
 

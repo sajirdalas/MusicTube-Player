@@ -11,11 +11,16 @@
 		<script type='text/javascript' src="js/res/async_storage.js"></script>
 		<script type='text/javascript' src="js/res/youtube.js"></script>
 		<script type='text/javascript' src="js/main.js"></script>
+
+		<!-- Localization stuff -->
+
+		<link rel="resource" type="application/l10n" href="locales/locales.ini">
+		<script type='text/javascript' src="js/res/l10n.js"></script>
 	</head>
 	<body id="body" class="center">
 
 		 <div id="toast" >
-				<img src="img/refresh.png" /> Loading
+				<img src="img/refresh.png" /> <p data-l10n-id="loading">Loading</p>
  		</div>
 
 
@@ -30,7 +35,7 @@
 				
 				<div id="section1">
 					<img src="img/test.jpg" id="CurrentlyPlaying"></img>
-					<p id="SongName"> Empty playlist. Search for youtube videos and add! </p>
+					<p id="SongName" data-l10n-id="EmptyPlaylist"> Empty playlist. Search for youtube videos and add! </p>
 					<div id="SeekBar"><div id="ProgressBar"></div> </div>
 				</div>
 				<div id="section2">
@@ -60,13 +65,13 @@
 <div id="blocker">
     <form id="secondForm" role="dialog" data-type="action">
       <menu id="IniMenu">
-     <button id="save" class="inactive"> Save Current Playlist </button> 	
-     <button id="BrowsePlaylists"> Load saved playlist </button>
-     <button id="AddYTP"> Add whole YT playlist </button>
-     <button id="CloseUp"> Close </button>
+     <button id="save" class="inactive" data-l10n-id="SaveCurrent"> Save Current Playlist </button> 	
+     <button id="BrowsePlaylists" data-l10n-id="LoadCurrent"> Load saved playlist </button>
+     <button id="AddYTP" data-l10n-id="AddWhole"> Add whole YT playlist </button>
+     <button id="CloseUp" data-l10n-id="Close"> Close </button>
      </menu>
      <menu id="loadMenu" class="inactive">
-       <button id="Cancel"> Close </button>
+       <button id="Cancel" data-l10n-id="Close"> Close </button>
      </menu>
     </form>
 </div>

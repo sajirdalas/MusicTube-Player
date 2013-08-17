@@ -1,7 +1,7 @@
 {
-    "name": "musicTube player",
+    "name": "musicTube player alpha",
     "description": "add music from youtube. Play, listen and enjoy",
-    "launch_path": "/index.html",
+    "launch_path": "index.html",
     "type" : "privileged",
     "version": "1.101",
     "icons": {

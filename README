@@ -18,3 +18,7 @@ Recent changes
 -Fixed some rebundant code
 -Tab and LongTab events are now managed by jquery mobile
 -Now in 2 lenguagues
+
+Bugs to fix
+-Playlist are not being parsed correctly (thanks youtube and your overnight html changes)
+-The wrong playlist ID notification is NOT translated
