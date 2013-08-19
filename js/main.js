@@ -155,10 +155,8 @@ function process_list(o){
 
  //I have to fix this translation issue here
  if(o.query.results==null){
-  if($("html").attr("lang")=="en"){
-  alert("Wrong link or ID!");}
-  if($("html").attr("lang")=="es"){
-  alert("¡Enlace o ID erróneo!");}
+  var ParError = navigator.mozL10n.get('ParError');
+  alert(ParError);
   return false;
  }
 var result_list = o.query.results.div;
